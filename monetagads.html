@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONETAG ADS | MR UNKNOWN</title>
     
-   
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     
-    
+    <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     
-  
+    <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
-    
-<script src='//whephiwums.com/sdk.js' data-zone='9271711' data-sdk='show_9271711'></script>
+    <!-- Monetag Ad SDK - Updated with HTTPS and proper placement -->
+    <script src='https://whephiwums.com/sdk.js' data-zone='9271711' data-sdk='show_9271711'></script>
 
     <style>
         body {
@@ -85,8 +84,6 @@
 <body>
 
 <div class="container animate__animated animate__fadeIn">
-    
- 
     <h2>Watch Ads and Earn Rewards!</h2>
     <div>
         <button id="showAdButton1" class="btn btn-primary">Show Ad 1</button>
@@ -94,8 +91,6 @@
         <button id="showAdButton3" class="btn btn-warning">Show Ad 3</button>
         <button id="showAdButton4" class="btn btn-red">Show Ad 4</button>
     </div>
-   
-
 </div>
 
 <!-- Bootstrap JS and dependencies -->
@@ -105,29 +100,51 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-    function showAd(buttonId) {
-        show_8576739().then(() => {
-            // Reward function
-            toastr.success(`You have watched the ad on ${buttonId} and earned a reward!`, 'Congratulations');
-        }).catch((error) => {
-            toastr.error('There was an error displaying the ad.', 'Error');
-            console.error(error);
-        });
-    }
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Monetag SDK is loaded
+        function isMonetagLoaded() {
+            return typeof show_9271711 !== 'undefined';
+        }
 
-    document.getElementById('showAdButton1').addEventListener('click', function() {
-        showAd('Show Ad 1');
-    });
+        // Show ad with proper error handling
+        function showAd(buttonId) {
+            if (!isMonetagLoaded()) {
+                toastr.error('Ad system not loaded. Please disable ad blockers and refresh.', 'Error');
+                return;
+            }
 
-    document.getElementById('showAdButton2').addEventListener('click', function() {
-        showAd('Show Ad 2');
-    });
+            show_9271711().then(() => {
+                // Reward function
+                toastr.success(`You watched an ad from ${buttonId} and earned a reward!`, 'Success');
+            }).catch((error) => {
+                toastr.error('Failed to display ad. Please try again.', 'Error');
+                console.error('Ad error:', error);
+            });
+        }
 
-    document.getElementById('showAdButton3').addEventListener('click', function() {
-        showAd('Show Ad 3');
-    });
-    document.getElementById('showAdButton4').addEventListener('click', function() {
-        showAd('Show Ad 4');
+        // Add event listeners with debouncing to prevent multiple clicks
+        function setupButton(buttonId, handler) {
+            const button = document.getElementById(buttonId);
+            let isProcessing = false;
+            
+            button.addEventListener('click', function() {
+                if (isProcessing) return;
+                isProcessing = true;
+                
+                // Add slight delay to prevent accidental double clicks
+                setTimeout(() => {
+                    handler(buttonId);
+                    isProcessing = false;
+                }, 300);
+            });
+        }
+
+        // Setup all buttons
+        setupButton('showAdButton1', showAd);
+        setupButton('showAdButton2', showAd);
+        setupButton('showAdButton3', showAd);
+        setupButton('showAdButton4', showAd);
     });
 </script>
 
